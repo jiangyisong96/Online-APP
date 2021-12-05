@@ -20,3 +20,15 @@ Online-APP,f/9/f99581d213a8e67ab7e6f6ad524b1caa631abfb5
 Vagrantfile,8/8/880a33829d0929ef6c5bb535e6f72195c0d9b644
 D
 service-user/pom.xml,3/6/36c1aae2fe34f59bbf5eeb50d0e296b90d906748
+M
+service-configuration/pom.xml,a/2/a24833e23c770d73112111d2d974a9f26147834b
+7
+pom.xml,4/4/442292b8a7efeabbe4cc176709b833b1792140ec
+9
+	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
+G
+service-gateway/pom.xml,c/7/c7a8a3f328043f8a14040a1702206ed0eca0b540
+G
+service-library/pom.xml,1/9/1961c91e493c8d6f444f5da8e8f069ec0dd305a2
+H
+service-registry/pom.xml,c/8/c838103466e7455490125db06ce61e4ea301ce49
