@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <conversionRule conversionWord="crlf" converterClass="org.owasp.security.logging.mask.CRLFConverter"/>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <springProperty scope="context" name="springAppName" source="spring.application.name"/>
+    <property name="LOG_FILE" value="${BUILD_FOLDER:-build}/${springAppName}.log"/>
+    <property name="AUDIT_LOG_FILE" value="${BUILD_FOLDER:-build}/${springAppName}-audit.log"/>
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+    <property name="FILE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+    <property name="CRLF_PATTERN"
+              value="%d %p %c{1.} %crlf(%.-2000msg) %n"/>
+    <property name="ACCESS_FILE" value="${BUILD_FOLDER:-build}/${springAppName}-access.log"/>
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <pattern>${CRLF_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+                <marker>AUDIT_EVENT</marker>
+            </evaluator>
+            <onMismatch>ACCEPT</onMismatch>
+            <onMatch>DENY</onMatch>
+        </filter>
+
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="Audit" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${AUDIT_LOG_FILE}</file>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+                <marker>AUDIT_EVENT</marker>
+            </evaluator>
+            <onMismatch>DENY</onMismatch>
+            <onMatch>ACCEPT</onMatch>
+        </filter>
+
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${AUDIT_LOG_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="Access" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${ACCESS_FILE}</file>
+
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${ACCESS_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy
+              class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="async" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="Access" />
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="File"/>
+        <appender-ref ref="Console"/>
+    </root>
+
+    <logger name="com.ufinity" level="info" additivity="false">
+        <appender-ref ref="Audit"/>
+        <appender-ref ref="File"/>
+        <appender-ref ref="Console"/>
+    </logger>
+
+    <logger name="reactor.netty.http.server.AccessLog" level="info" additivity="false">
+        <appender-ref ref="async"/>
+    </logger>
+
+</configuration>

@@ -1,0 +1,15 @@
+{
+  "index": {
+    "analysis": {
+      "analyzer": {
+        "case_insensitive": {
+          "filter": [
+            "lowercase"
+          ],
+          "type": "custom",
+          "tokenizer": "standard"
+        }
+      }
+    }
+  }
+}

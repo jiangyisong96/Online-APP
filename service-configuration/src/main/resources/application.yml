@@ -1,0 +1,182 @@
+server:
+  port: 9010
+  tomcat:
+    connection-timeout: @server.connection-timeout@
+    threads:
+      max: @server.threads.max@
+    mbeanregistry:
+      enabled: true
+  logback:
+    access:
+      config-path: logback-access.xml
+
+  ssl:
+    key-store-type: PKCS12
+    key-store: @server.ssl.key-store@
+    key-store-password: @server.ssl.key-store-password@
+    key-alias: @server.ssl.key-alias@
+    enabled: @server.ssl.enabled@
+    trust-store: @server.ssl.trust-store@
+    trust-store-type: PKCS12
+    trust-store-password: @server.ssl.trust-store-password@
+    client-auth: none
+spring:
+  datasource:
+    driver-class-name: @spring.datasource.driver-class-name@
+    url: @spring.datasource.url@
+    username: @spring.datasource.username@
+    password: @spring.datasource.password@
+    hikari:
+      idle-timeout: @spring.datasource.idle-timeout@
+      maximum-pool-size: @spring.datasource.maximum-pool-size@
+      minimum-idle: @spring.datasource.minimum-idle@
+      register-mbeans: true
+  data:
+    redis:
+      repositories:
+        enabled: false
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: @spring.jpa.show-sql@
+    properties:
+      javax:
+        persistence:
+          schema-generation:
+            scripts:
+              action: @spring.jpa.schema-generation.action@
+              create-target: create-configuration.sql
+              create-source: metadata
+  redis:
+    host: @spring.redis.host@
+    port: 6379
+    ssl: @spring.redis.ssl@
+  cache:
+    type: redis
+    default-ttl-in-second: 600
+  session:
+    redis:
+      namespace: seab:session
+    store-type: redis
+  mail:
+    host: @spring.mail.host@
+    port: @spring.mail.port@
+    username: @spring.mail.username@
+    password: @spring.mail.password@
+    properties:
+      mail:
+        smtp:
+          from: @spring.mail.bounce-address@
+          auth: @spring.mail.auth-enabled@
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+          starttls:
+            enable: false
+  zipkin:
+    base-url: @spring.zipkin.base-url@
+  cloud:
+    config:
+      server:
+        jdbc:
+          sql: SELECT KEY_NAME, VALUE from SERVICE_CONFIGURATION.properties where APPLICATION=? and PROFILE=? and LABEL=?
+
+management:
+  health:
+    mail:
+      enabled: false
+  endpoint:
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "health,scheduledtasks,shutdown"
+
+internal:
+  jwt:
+    token:
+      secret-key: @internal.jwt.token.secret.key@
+      attribute-name: JWTTOKEN
+
+cookie:
+  config:
+    secure:
+      cookie: @cookie.config.secure.cookie@
+    http-only: true
+    cookie-name: JWTSESSION
+    cookie-path: /
+
+service:
+  configuration:
+    host: @service.configuration.host@
+
+http:
+  client:
+    max-total-connections: @httpclient.max-connections@
+    max-connections-per-route: @httpclient.max-connections-per-route@
+    connect-timeout: @httpclient.connect-timeout@
+    request-timeout: @httpclient.request-timeout@
+    socket-timeout: 60000
+    default:
+      keep-alive-time: @httpclient.keep-alive-time@
+    close-idle-connection:
+      wait-time: 30000
+
+task:
+  scheduling:
+    pool:
+      size: 50
+
+iexams:
+  api:
+    iexams-public-key-name: iExamsPublicKey
+    cpepp-private-key-name: cpeppPrivateKey
+    iexams-jwt-secret-name: iExamsJwtSecret
+    iexams-encryption-init-vector-name: iExamsInitVector
+    api-key-name: iExamsApiKey
+    base-url: @iexams.api.base-url@
+    token:
+      validity-period: @iexams.api.token.validity-period@
+    service-account:
+      login-user-id: @iexams.api.service-account.login-user-id@
+      role-profile: ""
+      current-working-organisation: ""
+    claims:
+      get:
+        path: /iexams2/api/portal/user/get-claims
+    candidate-profile:
+      update:
+        path: /iexams2/cpep/cmm/updateCandidateProfile
+
+env: @env@
+
+sms:
+  api:
+    smsGateWayUrl: @sms.api.smsGateWayUrl@
+    smsId: @sms.api.smsId@
+    smsPassword: @sms.api.smsPassword@
+    isSmsEnabled: @sms.api.isSmsEnabled@
+
+email:
+  sender: noreply_cpep@seab.gov.sg
+  num-of-unmasked-characters: 1
+  logo: seab_logo.png
+
+aws:
+  backend-proxy:
+    url: @aws.backend-proxy.url@
+    port: @aws.backend-proxy.port@
+  endpoint: @aws.endpoint@
+  region: @aws.region@
+  access-key: @aws.access-key@
+  secret-key: @aws.secret-key@
+
+logging:
+  level:
+    com:
+      ufinity:
+        seab:
+          service: @logging.level.application@
+    org:
+      hibernate:
+        type: @logging.level.hibernate@

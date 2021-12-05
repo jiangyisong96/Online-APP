@@ -1,0 +1,31 @@
+# intellij files
+.idea
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# vagrant files
+.vagrant/
+.vagrant
+
+# build files
+build/
+
+# target files
+target/
+
+# robot framework test output and pycache
+misc/browserstack/robotOutput/
+misc/browserstack/variables/__pycache__/
+
+# hibernate auto-generated sql
+create-*.sql
+
+.gradle
+.gradle/*
+
+#tls related
+tls_enablement_cert.pem
+tls_enablement.keystore
+tls_enablement.truststore

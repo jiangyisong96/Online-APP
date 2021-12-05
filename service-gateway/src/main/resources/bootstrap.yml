@@ -1,0 +1,47 @@
+eureka:
+  instance:
+    metadataMap:
+      zone: default
+  client:
+    register-with-eureka: false
+    fetch-registry: true
+    service-url:
+      defaultZone: @eureka.client.service-url.defaultZone@
+    use-dns-for-fetching-service-urls: false
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+      zone: zone-preference
+    config:
+      discovery:
+        enabled: true
+        service-id: configuration-service
+
+cloud:
+  aws:
+    region:
+      static: ap-southeast-1
+    stack:
+      auto: false
+
+aws:
+  paramstore:
+    enabled: @aws.paramstore.enabled@
+    name: cpep
+    profile-separator: _
+  secretsmanager:
+    enabled: @aws.secretsmanager.enabled@
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+        internal:
+          InstanceMetadataServiceResourceFetcher: error

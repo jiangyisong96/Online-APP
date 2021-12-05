@@ -1,0 +1,250 @@
+= Service User API Documentation
+:toc: left
+:toclevels: 4
+
+== Introduction
+This is a Spring REST Docs generated documentation for service user.
+
+== Admin Related API
+
+=== Update Admin Roles
+A `PUT` request that used to update admin role info.
+
+==== Http Request
+include::{snippets}/put-admin-roles-authority/http-request.adoc[]
+
+==== Curl Request
+include::{snippets}/put-admin-roles-authority/curl-request.adoc[]
+
+==== Http Response
+include::{snippets}/put-admin-roles-authority/http-response.adoc[]
+
+==== Request Field
+include::{snippets}/put-admin-roles-authority/request-fields.adoc[]
+
+=== Create Ops Admin
+A `POST` request that used to create ops admin account.
+
+==== Http Request
+include::{snippets}/post-ops-admin/http-request.adoc[]
+
+==== Curl Request
+include::{snippets}/post-ops-admin/curl-request.adoc[]
+
+==== Http Response
+include::{snippets}/post-ops-admin/http-response.adoc[]
+
+==== Request Field
+include::{snippets}/post-ops-admin/request-fields.adoc[]
+
+=== Update Ops Admin
+A `PUT` request that used to update ops admin's account information.
+
+==== Http Request
+include::{snippets}/put-ops-admins-id/http-request.adoc[]
+
+==== Curl Request
+include::{snippets}/put-ops-admins-id/curl-request.adoc[]
+
+==== Path Parameter
+include::{snippets}/put-ops-admins-id/path-parameters.adoc[]
+
+==== Request Field
+include::{snippets}/put-ops-admins-id/request-fields.adoc[]
+
+==== Http Response
+include::{snippets}/put-ops-admins-id/http-response.adoc[]
+
+=== Delete Ops Admin
+A `DELETE` request that used to delete ops admin's account.
+
+==== Http Request
+include::{snippets}/delete-ops-admins-id/http-request.adoc[]
+
+==== Curl Request
+include::{snippets}/delete-ops-admins-id/curl-request.adoc[]
+
+==== Path Parameter
+include::{snippets}/delete-ops-admins-id/path-parameters.adoc[]
+
+==== Http Response
+include::{snippets}/delete-ops-admins-id/http-response.adoc[]
+
+== User Group Related API
+
+=== Create User Group Role
+A `POST` request that used to create user group role account.
+
+==== Http Request
+include::{snippets}/post-admin-roles/http-request.adoc[]
+
+==== Curl Request
+include::{snippets}/post-admin-roles/curl-request.adoc[]
+
+==== Http Response
+include::{snippets}/post-admin-roles/http-response.adoc[]
+
+==== Request Field
+include::{snippets}/post-admin-roles/request-fields.adoc[]
+
+=== Update User Group Role
+A `PUT` request that used to update user group role info.
+
+==== Http Request
+include::{snippets}/put-admin-roles-id/http-request.adoc[]
+
+==== Curl Request
+include::{snippets}/put-admin-roles-id/curl-request.adoc[]
+
+==== Http Response
+include::{snippets}/put-admin-roles-id/http-response.adoc[]
+
+==== Request Field
+include::{snippets}/put-admin-roles-id/request-fields.adoc[]
+
+=== Delete User Group Role
+A `DELETE` request that used to delete user group role account.
+
+==== Http Request
+include::{snippets}/delete-admin-roles-id/http-request.adoc[]
+
+==== Curl Request
+include::{snippets}/delete-admin-roles-id/curl-request.adoc[]
+
+==== Path Parameter
+include::{snippets}/delete-admin-roles-id/path-parameters.adoc[]
+
+==== Http Response
+include::{snippets}/delete-admin-roles-id/http-response.adoc[]
+
+== Request Related API
+
+=== Generate password Link
+A `POST` request that used to generate password link.
+
+==== Http Request
+include::{snippets}/post-admin-generate-password-link/http-request.adoc[]
+
+==== Curl Request
+include::{snippets}/post-admin-generate-password-link/curl-request.adoc[]
+
+==== Request Field
+include::{snippets}/post-admin-generate-password-link/request-fields.adoc[]
+
+==== Http Response
+include::{snippets}/post-admin-generate-password-link/http-response.adoc[]
+
+=== Generate Unlock Request
+A `POST` request that used to generate unlock request.
+
+==== Http Request
+include::{snippets}/post-admin-unlock/http-request.adoc[]
+
+==== Curl Request
+include::{snippets}/post-admin-unlock/curl-request.adoc[]
+
+==== Request Field
+include::{snippets}/post-admin-unlock/request-fields.adoc[]
+
+==== Http Response
+include::{snippets}/post-admin-unlock/http-response.adoc[]
+
+== Admin Related API
+
+=== Get Admin Role
+A `GET` request that used to list of roles, authorities and their relationship.
+
+==== Http Request
+include::{snippets}/get-admin-roles-format/http-request.adoc[]
+
+==== Curl Request
+include::{snippets}/get-admin-roles-format/curl-request.adoc[]
+
+==== Reqsponse Field
+include::{snippets}/get-admin-roles-format/response-fields.adoc[]
+
+==== Http Response
+include::{snippets}/get-admin-roles-format/http-response.adoc[]
+
+=== Get Admin Roles
+A `GET` request that used to list of admin roles.
+
+==== Http Request
+include::{snippets}/get-admin-roles/http-request.adoc[]
+
+==== Curl Request
+include::{snippets}/get-admin-roles/curl-request.adoc[]
+
+==== Reqsponse Field
+include::{snippets}/get-admin-roles/response-fields.adoc[]
+
+==== Http Response
+include::{snippets}/get-admin-roles/http-response.adoc[]
+
+=== Get System Admin Actions
+A `GET` request that used to find system admin actions.
+
+==== Http Request
+include::{snippets}/get-admin-system-action-types/http-request.adoc[]
+
+==== Curl Request
+include::{snippets}/get-admin-system-action-types/curl-request.adoc[]
+
+==== Reqsponse Field
+include::{snippets}/get-admin-system-action-types/response-fields.adoc[]
+
+==== Http Response
+include::{snippets}/get-admin-system-action-types/http-response.adoc[]
+
+=== Get Ops Admin Detail
+A `GET` request that used to get ops admin detail.
+
+==== Http Request
+include::{snippets}/get-ops-admins-id/http-request.adoc[]
+
+==== Curl Request
+include::{snippets}/get-ops-admins-id/curl-request.adoc[]
+
+==== Reqsponse Field
+include::{snippets}/get-ops-admins-id/response-fields.adoc[]
+
+==== Http Response
+include::{snippets}/get-ops-admins-id/http-response.adoc[]
+
+==== Path Parameter
+include::{snippets}/get-ops-admins-id/path-parameters.adoc[]
+
+== Exam Level Related API
+
+=== Retrieve Exam Level
+A `GET` request that used to get exam level info.
+
+==== Http Request
+include::{snippets}/get-exam-levels/http-request.adoc[]
+
+==== Curl Request
+include::{snippets}/get-exam-levels/curl-request.adoc[]
+
+==== Http Response
+include::{snippets}/get-exam-levels/http-response.adoc[]
+
+==== Response Field
+include::{snippets}/get-exam-levels/response-fields.adoc[]
+
+=== Retrieve Exam Time Window
+A `GET` request that used to get exam time window info.
+
+==== Http Request
+include::{snippets}/get-exam-levels-code-time-windows/http-request.adoc[]
+
+==== Curl Request
+include::{snippets}/get-exam-levels-code-time-windows/curl-request.adoc[]
+
+==== Http Response
+include::{snippets}/get-exam-levels-code-time-windows/http-response.adoc[]
+
+==== Response Field
+include::{snippets}/get-exam-levels-code-time-windows/response-fields.adoc[]
+
+==== Path Parameter
+include::{snippets}/get-exam-levels-code-time-windows/path-parameters.adoc[]

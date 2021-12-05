@@ -1,0 +1,18 @@
+server:
+  port: @server.port.zone-1@
+  tomcat:
+    connection-timeout: @server.connection-timeout@
+    threads:
+      max: @server.threads.max@
+    mbeanregistry:
+      enabled: true
+  logback:
+    access:
+      config-path: logback-access.xml
+
+logging:
+  level:
+    com:
+      ufinity:
+        seab:
+          service: @logging.level.application@

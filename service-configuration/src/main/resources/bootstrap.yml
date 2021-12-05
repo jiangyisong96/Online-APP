@@ -1,0 +1,55 @@
+eureka:
+  instance:
+    prefer-ip-address: @eureka.instance.prefer-ip-address@
+    metadataMap:
+      zone: default
+    secure-port-enabled: @eureka.instance.secure-port-enabled@
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: @eureka.client.service-url.defaultZone@
+
+encrypt:
+  key: cpepp
+
+spring:
+  application:
+    name: configuration-service
+  profiles:
+    active: jdbc
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+      zone: zone-preference
+    config:
+      server:
+        jdbc:
+          sql: SELECT KEY_NAME, VALUE from SERVICE_CONFIGURATION.PROPERTIES where APPLICATION=? and PROFILE=? and LABEL=?
+
+cloud:
+  aws:
+    region:
+      static: ap-southeast-1
+    stack:
+      auto: false
+
+aws:
+  paramstore:
+    enabled: @aws.paramstore.enabled@
+    name: cpep
+    profile-separator: _
+  secretsmanager:
+    enabled: @aws.secretsmanager.enabled@
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+        internal:
+          InstanceMetadataServiceResourceFetcher: error

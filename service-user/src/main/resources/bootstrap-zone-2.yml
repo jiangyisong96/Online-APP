@@ -1,0 +1,13 @@
+eureka:
+  instance:
+    metadataMap:
+      zone: zone-2
+  client:
+    preferSameZoneEureka: true
+    service-url:
+      defaultZone: @eureka.client.service-url.defaultZone@
+
+spring:
+  cloud:
+    loadbalancer:
+      zone: zone-2

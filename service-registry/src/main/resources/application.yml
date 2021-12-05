@@ -1,0 +1,38 @@
+server:
+  port: @server.port@
+  tomcat:
+    connection-timeout: @server.connection-timeout@
+    threads:
+      max: @server.threads.max@
+    mbeanregistry:
+      enabled: true
+  logback:
+    access:
+      config-path: logback-access.xml
+
+  ssl:
+    key-store-type: PKCS12
+    key-store: @server.ssl.key-store@
+    key-store-password: @server.ssl.key-store-password@
+    key-alias: @server.ssl.key-alias@
+    enabled: @server.ssl.enabled@
+    trust-store: @server.ssl.trust-store@
+    trust-store-type: PKCS12
+    trust-store-password: @server.ssl.trust-store-password@
+    client-auth: none
+
+logging:
+  level:
+    com:
+      ufinity:
+        seab:
+          service: @logging.level.application@
+
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "health,scheduledtasks,shutdown"

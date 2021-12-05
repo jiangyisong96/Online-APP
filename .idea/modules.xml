@@ -3,6 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Online-APP.iml" filepath="$PROJECT_DIR$/.idea/Online-APP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service-configuration/service-configuration.iml" filepath="$PROJECT_DIR$/service-configuration/service-configuration.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service-gateway/service-gateway.iml" filepath="$PROJECT_DIR$/service-gateway/service-gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service-library/service-library.iml" filepath="$PROJECT_DIR$/service-library/service-library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service-registry/service-registry.iml" filepath="$PROJECT_DIR$/service-registry/service-registry.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service-user/service-user.iml" filepath="$PROJECT_DIR$/service-user/service-user.iml" />
     </modules>
   </component>
 </project>

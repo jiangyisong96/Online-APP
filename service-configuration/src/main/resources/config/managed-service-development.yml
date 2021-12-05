@@ -1,0 +1,4 @@
+database:
+  aurora:
+    username: '{cipher}e3536631181195ce37ad64e7c043fe5f035acd9edc29de57f9e1fe6b98168877'
+    passowrd: '{cipher}185270afc0f0e263860d7c89cb17fa71ec6dab914d7f6c6005a0bb041f513569'

@@ -1,0 +1,44 @@
+eureka:
+  environment: development
+  datacenter: default
+  instance:
+    prefer-ip-address: false
+    metadataMap:
+      zone: default
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    healthcheck:
+      enabled: true
+    service-url:
+      default-zone: @eureka.client.service-url.default-zone@
+  server:
+    renewal-percent-threshold: 0
+
+spring:
+  application:
+    name: registry-service
+
+cloud:
+  aws:
+    region:
+      static: ap-southeast-1
+    stack:
+      auto: false
+
+aws:
+  paramstore:
+    enabled: @aws.paramstore.enabled@
+    name: cpep
+    profile-separator: _
+  secretsmanager:
+    enabled: @aws.secretsmanager.enabled@
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+        internal:
+          InstanceMetadataServiceResourceFetcher: error

@@ -1,0 +1,10 @@
+eureka:
+  datacenter: zone-2
+  instance:
+    metadataMap:
+      zone: zone-2
+  client:
+    preferSameZoneEureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: @eureka.client.service-url.zone-1@

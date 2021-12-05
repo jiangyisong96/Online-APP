@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <property name="ACCESS_FILE" value="${BUILD_FOLDER:-build}/${springAppName}-access.log"/>
+  <property name="ACCESS_LOG_PATTERN" value='%h %l %u %t \"%r\" %s %b %D'/>
+
+  <appender name="Access" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${ACCESS_FILE}</file>
+
+    <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+      <layout class="ch.qos.logback.access.PatternLayout">
+        <pattern>${ACCESS_LOG_PATTERN}</pattern>
+      </layout>
+    </encoder>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${ACCESS_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+      <maxHistory>10</maxHistory>
+      <timeBasedFileNamingAndTriggeringPolicy
+        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>10MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+  </appender>
+
+  <appender-ref ref="Access"/>
+
+</configuration>
