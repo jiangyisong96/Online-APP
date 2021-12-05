@@ -1,0 +1,39 @@
+@startuml
+left to right direction
+rectangle "Microservices" {
+  rectangle "Supporting Services"{
+    component Registry [
+      Service Registry
+      - service self-registration
+      - health checks
+    ]
+  }
+  rectangle "Core Services" as Core {
+    [CP Core Service] as CpCore
+    [EP Core Service] as EpCore
+    [Users Management Service] as User
+    [Document Upload Service] as Upload
+    [Financial Service] as Financial
+    [Reporting Service] as Reporting
+  }
+  CpCore --> Registry
+  CpCore .right.> User
+  CpCore .right.> Upload
+  CpCore .right.> Financial
+  CpCore .right.> Reporting
+  EpCore --> Registry
+  EpCore .right.> User
+  EpCore .right.> Upload
+  EpCore .right.> Financial
+  EpCore .right.> Reporting
+  User --> Registry
+  Upload --> Registry
+  Financial --> Registry
+  Reporting --> Registry
+  Reporting .right.> User
+  Reporting .right.> Upload
+  Reporting .right.> Financial
+  Reporting .left.> CpCore
+  Reporting .right.> EpCore
+}
+@enduml

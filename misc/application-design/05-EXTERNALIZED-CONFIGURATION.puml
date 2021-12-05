@@ -1,0 +1,26 @@
+@startuml
+left to right direction
+rectangle "Microservices" {
+  rectangle "Supporting Services"{
+    component Configuration [
+      Externalized Configuration
+      - resource-based API for configuration
+      - encryption and decryption
+    ]
+  }
+  rectangle "Core Services" as Core {
+    [Users Management Service] as User
+    [Document Upload Service] as Upload
+    [Financial Service] as Financial
+    [Reporting Service] as Reporting
+    [CP Core Service] as CpCore
+    [EP Core Service] as EpCore
+  }
+  CpCore --> Configuration
+  EpCore --> Configuration
+  User --> Configuration
+  Upload --> Configuration
+  Financial --> Configuration
+  Reporting --> Configuration
+}
+@enduml

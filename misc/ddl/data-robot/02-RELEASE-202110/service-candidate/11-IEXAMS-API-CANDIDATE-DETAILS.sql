@@ -1,0 +1,1 @@
+UPDATE SERVICE_CANDIDATE.iexams_api_candidate_details t SET t.created_at = CURRENT_TIMESTAMP, t.created_by_user_id = 0, t.updated_at = CURRENT_TIMESTAMP, t.updated_by_user_id = 0 where t.created_at like '0000-00-00 00:00:00';

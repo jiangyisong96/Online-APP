@@ -1,0 +1,7 @@
+
+
+INSERT INTO SERVICE_CANDIDATE.exam_registration_papers (`id`,`created_at`,`created_by_user_id`,`updated_at`,`updated_by_user_id`,`paper_id`,`exam_registration_detail_id`,`status`) VALUES (4,'2021-11-05 01:56:05',127,'2021-11-05 01:56:05',127,2,7,'REGISTERED');
+INSERT INTO SERVICE_CANDIDATE.exam_registration_papers (`id`,`created_at`,`created_by_user_id`,`updated_at`,`updated_by_user_id`,`paper_id`,`exam_registration_detail_id`,`status`) VALUES (5,'2021-11-05 01:56:05',127,'2021-11-05 01:56:05',127,4,7,'REGISTERED');
+INSERT INTO SERVICE_CANDIDATE.exam_registration_papers (`id`,`created_at`,`created_by_user_id`,`updated_at`,`updated_by_user_id`,`paper_id`,`exam_registration_detail_id`,`status`) VALUES (6,'2021-11-05 01:56:05',127,'2021-11-05 01:56:05',127,5,7,'REGISTERED');
+INSERT INTO SERVICE_CANDIDATE.exam_registration_papers (`id`,`created_at`,`created_by_user_id`,`updated_at`,`updated_by_user_id`,`paper_id`,`exam_registration_detail_id`,`status`) VALUES (7,'2021-11-05 01:56:05',127,'2021-11-05 01:56:05',127,13,7,'REGISTERED');
+INSERT INTO SERVICE_CANDIDATE.exam_registration_papers (`id`,`created_at`,`created_by_user_id`,`updated_at`,`updated_by_user_id`,`paper_id`,`exam_registration_detail_id`,`status`) VALUES (8,'2021-11-05 01:56:05',127,'2021-11-05 01:56:05',127,15,7,'REGISTERED');

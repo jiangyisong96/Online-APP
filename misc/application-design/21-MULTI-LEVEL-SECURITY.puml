@@ -1,0 +1,13 @@
+@startuml
+start
+partition "API Interface Layer" {
+    :REST API Controller\n- Role/permission-based Access Control       ;
+}
+partition "Business Logic Layer" {
+    :Service\n- Organization Access-based Access Control\n- Business Logic-based Access Control;
+}
+partition "Data Access Layer" {
+    :Repository\n- ACL-based Access Control                          ;
+}
+stop
+@enduml

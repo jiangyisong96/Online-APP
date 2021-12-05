@@ -1,0 +1,74 @@
+@startuml
+autonumber
+ReactApp -> ReactApp : Select "eNets" from the payment mode
+ReactApp -> ServiceFinancial :  Call checkout api from serviceFinancial \n
+note right
+ {paymentMode, internalTransactionRef}
+end note
+ServiceFinancial -> ServiceFinancial :update Transactions Table
+note right
+QUERY with 'internal_transaction_ref = internalTransactionRef' and \n
+ SET transaction_status = 'PENDING'
+ SET payment_type = paymentMode
+end note
+ServiceFinancial -> eNetsClient     : Sends HTML Page(keyId , MAC Value & TxnReq)
+eNetsClient --> eNetsGateway : forwards(keyId , MAC Value & TxnReq)
+eNetsGateway --> eNetsClient : Displays Payment Option Page and performs a series of background interaction
+eNetsClient --> eNetsGateway : Sends payment details after user key in
+eNetsGateway --> eNetsGateway : NETS GW processes the TxnReq
+eNetsGateway -> ServiceFinancial : Returns keyId , MAC Value and TxnRes \n  to /api/s2sTxnEndUrl
+eNetsGateway --> eNetsClient : Returns keyId , MAC Value and TxnRes-b2sTxnEnd
+eNetsClient -> ServiceFinancial : Returns keyId , MAC Value and TxnRes \n to /api/b2sTxnEndUrl
+ServiceFinancial -> ServiceFinancial : extract and check netsTxnStatus
+
+
+alt netsTxnStatus: 1 && netsActionCode: 2 || netsTxnStatus: null
+ServiceFinancial -> eNetsGateway : immediately trigger TxnQuery api
+eNetsGateway -> ServiceFinancial : return TxnQueryResponse
+ServiceFinancial -> ServiceFinancial : extract and check netsTxnStatus
+ServiceFinancial -> ServiceFinancial : update Transactions Table
+note right
+netsTxnStatus 0: SET transaction_status = 'SUCCESS'
+netsTxnStatus 1: SET transaction_status = 'FAILED'
+netsTxnStatus 1 && netsActionCode 2: SET transaction_status = 'QUERY'
+netsTxnStatus 9: SET transaction_status = 'CANCELED'
+netsTxnStatus null: SET transaction_status = 'QUERY'
+
+end note
+alt netsTxnStatus : null
+ServiceFinancial -> eNetsGateway :trigger TxnQuery api after 5 seconds
+eNetsGateway -> ServiceFinancial : return TxnQueryResponse
+ServiceFinancial -> ServiceFinancial : extract and check netsTxnStatus
+ServiceFinancial -> ServiceFinancial : update Transactions Table
+note right
+netsTxnStatus 0: SET transaction_status = 'SUCCESS'
+netsTxnStatus 1: SET transaction_status = 'FAILED'
+netsTxnStatus 9: SET transaction_status = 'CANCELED'
+netsTxnStatus null: SET transaction_status = 'SCHEDULED'
+end note
+
+alt netsTxnStatus : null
+ServiceFinancial -> eNetsGateway :trigger TxnQuery api after 5 minutes (let scheduler to handle)
+eNetsGateway -> ServiceFinancial : return TxnQueryResponse
+ServiceFinancial -> ServiceFinancial : extract and check netsTxnStatus
+ServiceFinancial -> ServiceFinancial : update Transactions Table
+note right
+netsTxnStatus 0: SET transaction_status = 'SUCCESS'
+netsTxnStatus 1: SET transaction_status = 'FAILED'
+netsTxnStatus 9: SET transaction_status = 'CANCELED'
+netsTxnStatus null: SET transaction_status = 'NO_STATUS'
+end note
+
+end
+else netsTxnStatus: 0, 1, 9
+ServiceFinancial -> ReactApp :redirect to front end
+end
+
+else netsTxnStatus: 0, 9
+ServiceFinancial -> ReactApp :redirect to front end
+end
+legend
+Straight line: handled by "eNets"
+Dotted line: Required user's action
+endlegend
+@enduml

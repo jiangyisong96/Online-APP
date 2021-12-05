@@ -1,0 +1,163 @@
+---
+- hosts: all
+  vars_files:
+    - config.yml
+  tasks:
+    - name: Download sources
+      get_url:
+        url: '{{ item }}'
+        dest: /opt/
+      with_items:
+        - 'https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticSearch.version }}-x86_64.rpm'
+        - 'https://dev.mysql.com/get/mysql{{ mysql.version }}-community-release-el7-3.noarch.rpm'
+        - 'http://download.redis.io/releases/redis-{{ redis.version }}.tar.gz'
+
+    - name: Register package
+      yum:
+        name: [ '/opt/elasticsearch-{{ elasticSearch.version }}-x86_64.rpm', '/opt/mysql{{ mysql.version }}-community-release-el7-3.noarch.rpm' ]
+        state: present
+
+    - name: Install Packages
+      yum:
+        name: [ 'elasticsearch', 'mysql-server' ]
+        state: present
+
+    - name: Install PyMySQL, Docker-py
+      pip:
+        name: [ 'PyMySQL', 'docker-py' ]
+        state: present
+
+    - name: Install awscli-local
+      become: true
+      become_user: vagrant
+      pip:
+        name: [ 'awscli-local' ]
+        state: present
+        extra_args: --no-python-version-warning
+
+    - name: Install and start Docker
+      shell: '{{ item }}'
+      with_items:
+        - amazon-linux-extras install docker
+        - usermod -a -G docker vagrant
+        - systemctl start docker
+        - chkconfig docker on
+
+    - name: unzip redis source
+      shell: cd /opt/ && tar xzf /opt/redis-{{ redis.version }}.tar.gz creates=/opt/redis-{{ redis.version }}
+
+    - name: make redis
+      shell: make chdir=/opt/redis-{{ redis.version }} creates=/opt/redis-{{ redis.version }}/src/redis-server
+
+    - name: move compiled redis binaries
+      shell: cp -f {{ item }} /usr/local/bin chdir=/opt/redis-{{ redis.version }}/src
+      with_items:
+        - redis-cli
+        - redis-server
+        - redis-benchmark
+
+    - name: Start MySQL
+      service:
+        name: mysqld
+        state: started
+        enabled: yes
+
+    - name: Get temp root password (MYSQL)
+      shell: 'grep "temporary password" /var/log/mysqld.log | sed "s/^.*: //"'
+      register: tempPassword
+
+    - name: Set new password from temporary password (MYSQL)
+      shell: 'mysql -e "ALTER USER ''root''@''localhost'' IDENTIFIED BY ''{{ mysql.newPassword }}'';" --connect-expired-password -u root -p"{{ tempPassword.stdout }}"'
+      ignore_errors: True
+
+    - name: Configure mysql
+      template: src=my.cnf.j2 dest=/root/.my.cnf
+
+    - name: Restart mysql
+      service:
+        name: mysqld
+        state: restarted
+        enabled: yes
+
+    - name: Create new user
+      mysql_user: name='{{ mysql.dbUsername }}'
+        host='%'
+        update_password=always
+        priv='*.*:All,GRANT'
+        password='{{ mysql.dbUserPassword }}'
+        state=present
+
+    - name: configure redis-server as service
+      template: src=redis.service.j2 dest=/etc/systemd/system/redis.service
+
+    - name: configure redis-server
+      template: src=redis.conf.j2 dest=/etc/redis.conf
+
+    - name: configure elasticsearch
+      template: src=elasticsearch.yml.j2 dest=/etc/elasticsearch/elasticsearch.yml
+
+    - name: create redis group
+      shell: groupadd redis
+      ignore_errors: True
+
+    - name: create redis user and add to group
+      shell: adduser -r -M -g redis redis
+      ignore_errors: True
+
+    - name: create redis user dir
+      file:
+        path: /var/lib/redis
+        owner: redis
+        group: redis
+        mode: 0770
+        state: directory
+
+    - name: create redis log dir
+      file:
+        path: '{{ redis.logDir }}'
+        mode: 0777
+        state: directory
+      ignore_errors: True
+
+    - name: create redis data dir
+      file:
+        path: '{{ redis.dataDir }}'
+        state: directory
+      ignore_errors: True
+
+    - name: Change elasticsearch startup timeout
+      lineinfile:
+        path: /usr/lib/systemd/system/elasticsearch.service
+        regex: 'TimeoutStartSec'
+        line: TimeoutStartSec=0
+
+    - name: Execute script for json-server
+      command: sh /vagrant/misc/json-server/bootstrap_config.sh
+
+    - name: Start localstack
+      community.docker.docker_container:
+        name: localstack
+        image: localstack/localstack
+        state: started
+        restart_policy: always
+        container_default_behavior: 'compatibility'
+        ports:
+          - '0.0.0.0:4566:4566/tcp'
+          - '0.0.0.0:8080-8081:8080-8081/tcp'
+          - '4571/tcp'
+        env:
+          SERVICES: s3,sqs,secretsmanager
+          DATA_DIR: /tmp/localstack/data
+
+
+    - name: Restart and enable services
+      service:
+        name: '{{item}}'
+        state: restarted
+        enabled: yes
+      with_items:
+        - redis
+        - elasticsearch
+        - mysqld
+
+

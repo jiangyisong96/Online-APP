@@ -1,0 +1,119 @@
+@startuml
+actor User
+participant "Web App" as Client
+participant "CP Core Service" as CpCore
+participant "Document Service" as Document
+participant "S3 - Dirty Bucket" as Dirty
+participant "S3 - Clean Bucket" as Clean
+participant "S3 - Quarantine Bucket" as Quarantine
+participant "Amazon SQS" as SQS
+participant "Trend Micro Cloud One" as Scanner
+User -> Client: upload document
+activate Client
+Client -> CpCore: GET: request for pre-signed URL
+activate CpCore
+CpCore -> Document: GET: request for pre-signed URL
+activate Document
+Document --> CpCore: Response: pre-signed URL
+deactivate Document
+CpCore --> Client: Response: pre-signed URL
+deactivate CpCore
+Client -> Dirty: POST: upload document
+activate Dirty
+Dirty --> Client: Response: document uploaded
+Dirty -> Scanner: POST: publish document upload event
+deactivate Dirty
+activate Scanner
+Scanner -> Dirty: GET: read document
+activate Dirty
+Dirty --> Scanner: Response: document
+deactivate Dirty
+Scanner -> Scanner: scan for viruses
+Client -> Document: GET: poll virus scan status
+activate Document
+Document --> Client: Response: virus scan in progress
+deactivate Document
+alt virus not found
+Scanner -> Dirty: POST: copy scanned document
+activate Dirty
+Dirty -> Clean: POST: copy scanned document
+activate Clean
+Clean --> Scanner: Response: document copied
+Scanner -> Dirty: POST: delete document
+Dirty --> Scanner: Response: document deleted
+deactivate Dirty
+Clean -> SQS: POST: publish document upload event
+deactivate Clean
+activate SQS
+group job scheduler
+?-> Document: start
+activate Document
+Document -> SQS: GET: poll document upload event
+SQS --> Document: Response: document upload event
+deactivate SQS
+Document -> Clean: GET: read document attributes
+activate Clean
+Clean --> Document: Response: document attributes
+deactivate Clean
+Document -> Document: update document attributes
+?<- Document: end
+deactivate Document
+end
+Client -> Document: GET: poll virus scan status
+activate Document
+Document --> Client: Response: virus scan completed
+deactivate Document
+Client -> CpCore: POST: process document
+activate CpCore
+CpCore -> Document: GET: document details
+activate Document
+Document --> CpCore: Response: document details
+deactivate Document
+CpCore -> Clean: GET: read document
+activate Clean
+Clean --> CpCore: Response: document
+deactivate Clean
+CpCore -> CpCore: verify document
+alt valid document
+CpCore -> CpCore : process document
+CpCore --> Client: Response: document processed
+else invalid document
+CpCore --> Client: Response: verification status
+Client -> Client: display verification status
+end
+deactivate CpCore
+else virus found
+Scanner -> Dirty: POST: copy scanned document
+activate Dirty
+Dirty -> Quarantine: POST: copy scanned document
+activate Quarantine
+Quarantine --> Scanner: Response: document copied
+Scanner -> Dirty: POST: delete document
+Dirty --> Scanner: Response: document deleted
+deactivate Scanner
+deactivate Dirty
+Quarantine -> SQS: POST: publish document upload event
+deactivate Quarantine
+activate SQS
+group job scheduler
+?-> Document: start
+activate Document
+Document -> SQS: GET: poll document upload event
+SQS --> Document: Response: document upload event
+deactivate SQS
+Document -> Quarantine: GET: read document attributes
+activate Quarantine
+Quarantine --> Document: Response: document attributes
+deactivate Quarantine
+Document -> Document: update document attributes
+?<- Document: end
+deactivate Document
+end
+Client -> Document: GET: poll virus scan status
+activate Document
+Document --> Client: Response: virus scan completed
+deactivate Document
+Client -> Client: display scan status
+end
+deactivate Client
+@enduml

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
+  <servers>
+	<server>
+      <id>nexus-ship</id> 
+      <username>${env.bamboo_ship_buildmaster_username}</username>
+      <password>${env.bamboo_ship_buildmaster_password}</password>
+    </server>
+  </servers>
+  <mirrors>
+    <mirror>
+      <id>central</id>
+      <name>central</name>
+      <url>https://nexus.ship.gov.sg/repository/maven2-proxy/</url>
+      <mirrorOf>*</mirrorOf>
+    </mirror>
+  </mirrors>
+</settings>

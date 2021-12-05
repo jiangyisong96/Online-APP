@@ -1,0 +1,41 @@
+@startuml
+autonumber
+ReactApp -> ReactApp    :  Click proceed to payment in summary page
+ReactApp -> ServiceCandidate     : send a createApplicationRequest api
+ServiceCandidate -> ServiceCandidate : create new row in ApplicationRequest Table
+ServiceCandidate -> ServiceFinancial      : call feign client to call createPaymentRequest api \n from service financial and send across
+note right
+ { applicationType, transactionAmount }
+end note
+
+ServiceFinancial -> ServiceFinancial : generate a internalTransactionRef with YYYYMMDDhhmmssmm(length 16)
+alt no duplicated internalTransactionRef
+ServiceFinancial -> ServiceFinancial : create new row in Transactions Table with the internalTransactionRef \n
+note right
+SET application_type = applicationType
+SET internal_transaction_ref = internalTransactionRef
+SET transaction_amount = transactionAmount
+SET transaction_status = 'NEW'
+SET payment_type = 'UNKNOWN'
+end note
+ServiceFinancial -> ServiceCandidate       :  responds with
+note right
+ { internalTransactionRef }
+end note
+
+ServiceCandidate -> ServiceCandidate : update the ApplicationRequest Table with the internalTransactionRef
+note right
+SET internal_transaction_ref = internalTransactionRef
+end note
+ServiceCandidate -> ReactApp : responds with
+note right
+{ internalTransactionRef }
+end note
+else duplicated internalTransactionRef
+ServiceFinancial -> ServiceFinancial : Service Financial DB throws error due to the unique attribute of internalTransactionRef
+ServiceFinancial -> ServiceFinancial : Sleep(1000) and retry (3 times)) table insertion with newly generated internalTransactionRef
+ServiceFinancial -> ServiceCandidate       :  Return error if fail 3 times.
+ServiceCandidate -> ReactApp : return error to the front end
+ReactApp -> ReactApp : ask the user to retry payment
+end
+@enduml

@@ -1,0 +1,31 @@
+@startuml
+left to right direction
+rectangle iEXAMS [
+  iEXAMS2
+  - Hold client id and secret
+]
+rectangle "GCC AWS" {
+  component Cognito [
+    Amazon Cognito
+    - OAuth2-based authentication
+      (client credentials grant)
+  ]
+  rectangle "SEAB CP and EPP" {
+    component Gateway [
+      Cloud Gateway
+      - Authorize access to APIs
+      - Route requests to APIs
+    ]
+    component Service [
+      Microservice APIs
+      - Notify entry proof ready status
+      - Notify Access Arrangements (AA) outcome
+      - Notify result appeal outcome
+    ]
+    iEXAMS -down-> Cognito: **1** retrieve access token\nby client id and secret
+    iEXAMS -down-> Gateway: **2** send API request\nwith access token
+    Gateway -left-> Cognito: **3** verify access token
+    Gateway -down-> Service
+  }
+}
+@enduml

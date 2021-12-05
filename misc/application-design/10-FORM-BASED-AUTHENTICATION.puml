@@ -1,0 +1,64 @@
+@startuml
+actor User
+participant Client
+participant "S3 / CDN" as CDN
+participant "User Management Service" as AuthService
+participant "CP Core Service" as CpCore
+participant "ElasticCache" as Cache
+User -> Client: access web app
+Client -> CDN: GET: download web app
+activate CDN
+CDN --> Client: Response: app assets
+deactivate CDN
+
+alt new user session
+Client -> AuthService: GET: retrieve user details
+activate AuthService
+AuthService --> Client: Response: 401 unauthorized
+deactivate AuthService
+Client -> Client: show signin form
+User -> Client: submit credentials
+Client -> AuthService: POST: send credentials
+activate AuthService
+AuthService -> AuthService: verify user and create user session
+AuthService -> Cache: POST: save user session
+activate Cache
+Cache --> AuthService: Response: 200 ok
+deactivate Cache
+AuthService -> AuthService: create jwt cookie
+AuthService --> Client: Response: user details json\nand jwt cookie
+deactivate AuthService
+Client -> Client: redirect to dashboard
+Client -> CpCore: GET: retrieve exams details (with jwt cookie)
+activate CpCore
+CpCore -> CpCore: verify jwt cookie
+CpCore -> Cache: GET: retrieve user session
+activate Cache
+Cache --> CpCore: Response: user session
+deactivate Cache
+CpCore -> CpCore: determine permission
+CpCore --> Client: Reponse: exams details json
+deactivate CpCore
+else existing user session
+Client -> AuthService: GET: retrieve user details (with jwt cookie)
+activate AuthService
+AuthService -> AuthService: verify jwt cookie
+AuthService -> Cache: GET: retrieve user session
+activate Cache
+Cache --> AuthService: Response: user session
+deactivate Cache
+AuthService --> Client: Response: user details json
+deactivate AuthService
+Client -> Client: show dashboard
+Client -> CpCore: GET: retrieve exams details (with jwt cookie)
+activate CpCore
+CpCore -> CpCore: verify jwt cookie
+CpCore -> Cache: GET: retrieve user session
+activate Cache
+Cache --> CpCore: Response: user session
+deactivate Cache
+CpCore -> CpCore: determine permission
+CpCore --> Client: Response: exams details json
+deactivate CpCore
+end
+@enduml

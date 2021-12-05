@@ -1,0 +1,30 @@
+@startuml
+left to right direction
+rectangle "Identity Providers and Personal Data Platform" as Identity {
+  [CorpPass]
+  [SingPass]
+  [MIMS]
+  [MyInfo]
+}
+rectangle "Exam Admin System" as ExamAdmin {
+  [iEXAMS2]
+}
+rectangle "Payment Providers" as Payment {
+  [Internet Banking]
+  [Credit Card/Debit Card]
+  [Whole of Government QR]
+}
+skinparam BoxPadding 100
+rectangle "SEAB CP and EPP" {
+  collections "Managed Services" as Managed
+  rectangle "Microservices" {
+    collections "Core Services" as Core
+    collections "Supporting Services" as Supporting
+    Core -up- Supporting
+    Core -up- Managed
+  }
+  Core -right- Identity
+  Core -down- ExamAdmin
+  Core -down- Payment
+}
+@enduml

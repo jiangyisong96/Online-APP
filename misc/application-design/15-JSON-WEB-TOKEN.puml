@@ -1,0 +1,15 @@
+@startuml
+skinparam state {
+  BackgroundColor<<White>> White
+}
+state "**JSON Web Token (JWT)**" as JWT <<White>> {
+  state Header
+  Header: {\n\t"alg":"HS256",                              \n\t"typ":"JWT"\n}
+  --
+  state Payload
+  Payload: {\n\t"sub":"1234567890 (Session ID)"\n}
+  --
+  state Signature
+  Signature: HMACSHA256(\n\tbase64UrlEncode(header) + "." +\n\tbase64UrlEncode(payload),\n\tsecret\n)
+}
+@enduml

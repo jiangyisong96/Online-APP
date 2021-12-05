@@ -1,0 +1,32 @@
+@startuml
+hide footbox
+actor User
+participant Client
+participant "CP Core Service" as CpCore
+participant "ElasticCache" as Cache
+participant "Aurora Serverless" as Aurora
+User -> Client: access web app
+Client -> CpCore: GET: retrieve exams details\n(with jwt cookie)
+activate CpCore
+CpCore -> CpCore: verify jwt cookie
+CpCore -> Cache: GET: retrieve user session
+activate Cache
+Cache --> CpCore: Response: user session
+deactivate Cache
+CpCore -> Aurora: GET: retrieve user access control entries
+activate Aurora
+Aurora --> CpCore: Response: user access control entries
+deactivate Aurora
+CpCore -> CpCore: determine permission
+alt permission granted
+CpCore -> Aurora: GET: retrieve exams details
+activate Aurora
+Aurora --> CpCore: Response: exams details
+deactivate Aurora
+CpCore --> Client: Response: exams details json
+else permission denied
+CpCore -> CpCore: log request details
+CpCore --> Client: Response: 403 forbidden
+end
+deactivate CpCore
+@enduml

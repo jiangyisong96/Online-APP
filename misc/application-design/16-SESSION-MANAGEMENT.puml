@@ -1,0 +1,18 @@
+@startuml
+|\tPre-authentication\t\t|
+start
+repeat
+:Pre-authentication Session;
+if (\nAuthenticated?\n) is (No) then
+:Session Finalization;
+else (Yes)
+|    Post-authentication    |
+:Post-authentication Session;
+:Access Control;
+:Session Finalization;
+endif
+|\tPre-authentication\t\t|
+repeatwhile (\nRenew Session?\n) is (Yes)
+->No;
+stop
+@enduml

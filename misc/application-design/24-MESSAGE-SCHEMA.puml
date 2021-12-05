@@ -1,0 +1,6 @@
+@startuml
+skinparam state {
+  BackgroundColor<<White>> White
+}
+state "**Message Body**" <<White>> : {\n\t"traceId":"1234567890",\n\t"event":"PAYMENT_SUCCEEDED",\n\t"internalTransactionRef":"1234567890",\n\t"applicationType":"RESIT",\n\t"datetime":"2021-12-31T00:00:00"\n}
+@enduml

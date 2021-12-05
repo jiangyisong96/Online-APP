@@ -1,0 +1,10 @@
+@startuml
+skinparam titleFontSize 14
+title
+Sample Lookup Table
+|= id |= uuid                                |= description |= iexams_code_type |= iexams_code |
+| 1   | 84c69f7e-dbff-44ed-8a74-a327727d3865 | GCE A-LEVEL  | APPL_EXAM_LVL_CD  | GCEA         |
+| 2   | ae00e4ef-9b95-483e-b152-fd5ced416fb7 | GCE N-LEVEL  | APPL_EXAM_LVL_CD  | GCEN         |
+| 3   | 2293f93b-80d1-4e13-a3ff-5f250dd7fff0 | GCE O-LEVEL  | APPL_EXAM_LVL_CD  | GCEO         |
+end title
+@enduml

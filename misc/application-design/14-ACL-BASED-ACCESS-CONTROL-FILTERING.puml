@@ -1,0 +1,27 @@
+@startuml
+hide footbox
+actor User
+participant Client
+participant "Document Upload Service" as Document
+participant "ElasticCache" as Cache
+participant "Aurora Serverless" as Aurora
+User -> Client: access web app
+Client -> Document: GET: retrieve document list\n(with jwt cookie)
+activate Document
+Document -> Document: verify jwt cookie
+Document -> Cache: GET: retrieve user session
+activate Cache
+Cache --> Document: Response: user session
+deactivate Cache
+Document -> Aurora: GET: retrieve user access control entries
+activate Aurora
+Aurora --> Document: Response: user access control entries
+deactivate Aurora
+Document -> Aurora: GET: retrieve document list
+activate Aurora
+Aurora --> Document: Response: document list
+deactivate Aurora
+Document -> Document: filter document list\n(based on access control entries)
+Document --> Client: Response: filtered document list json
+deactivate Document
+@enduml

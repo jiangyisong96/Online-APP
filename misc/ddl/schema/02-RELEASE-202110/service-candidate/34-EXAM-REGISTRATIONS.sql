@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS SERVICE_CANDIDATE.exam_registrations;
+
+CREATE TABLE SERVICE_CANDIDATE.exam_registrations
+(
+    id     BIGINT NOT NULL AUTO_INCREMENT,
+    active BIT(1) NOT NULL,
+
+    PRIMARY KEY (id),
+    CONSTRAINT FK7onihbx5xwaoxx8jxr0gqejp3 FOREIGN KEY (id)
+        REFERENCES SERVICE_CANDIDATE.registrations (id) ON DELETE CASCADE
+);

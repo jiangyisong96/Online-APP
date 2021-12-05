@@ -1,0 +1,26 @@
+@startuml
+left to right direction
+actor :User: as User
+rectangle "SEAB CP and EPP" {
+  collections "Web Apps" as WebApp
+  rectangle "Microservices" {
+    component Proxy [
+      Controller Proxy
+    ]
+    component Candidate [
+      Candidate Controller
+    ]
+    component Document [
+      Document Controller
+    ]
+    component Payment [
+      Payment Controller
+    ]
+    User <-down- WebApp: Generic\nresponse
+    WebApp <-down- Proxy: Generic\nresponse
+    Proxy <-down- Document: Out of menory
+    Proxy <-down- Payment: Database unavailable
+    Proxy <-down- Candidate: Network timeout
+  }
+}
+@enduml

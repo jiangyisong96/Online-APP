@@ -1,0 +1,22 @@
+@startuml
+left to right direction
+component Secret [
+  AWS Secrets Manager
+  - Hold service account credentials
+]
+rectangle "CP Core Service" as CpCore {
+  [Job Scheduler] as Scheduler
+}
+rectangle "Shared Services" as Shared {
+  [Users Management Service] as User
+  [Document Upload Service] as Upload
+  [Financial Service] as Financial
+  [Reporting Service] as Reporting
+}
+Scheduler -left-> Secret: **1** retrieve service account credentials\n\n
+Scheduler --> User: **2** request jwt token by\nservice account credentials
+User --> Secret: **3** verify service account credentials
+Scheduler --> Upload: **4** send API requestwith jwt token
+Scheduler --> Financial
+Scheduler --> Reporting
+@enduml

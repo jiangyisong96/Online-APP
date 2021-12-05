@@ -1,0 +1,40 @@
+---
+- hosts: all
+  vars_files:
+    - config.yml
+  tasks:
+    - name: Install PyMySQL, Docker-py
+      pip:
+        name: [ 'docker-py' ]
+        state: present
+
+    - name: Install and start Docker
+      shell: '{{ item }}'
+      with_items:
+        - amazon-linux-extras install docker
+        - usermod -a -G docker vagrant
+
+    - name: create docker service config dir
+      file:
+        path: /etc/systemd/system/docker.service.d/
+        state: directory
+      ignore_errors: True
+
+    - name: Configure docker daemon
+      template: src=docker.conf.j2 dest=/etc/systemd/system/docker.service.d/override.conf
+
+    - name: Change docker service config file permissions
+      file:
+        path: /etc/systemd/system/docker.service.d/override.conf
+        mode: '0644'
+
+    - name: Reload daemon
+      service:
+        daemon_reload: yes
+
+    - name: Restart and enable services
+      service:
+        name: docker
+        state: restarted
+        enabled: yes
+

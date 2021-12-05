@@ -1,0 +1,29 @@
+@startuml
+left to right direction
+rectangle "Managed Services" {
+  rectangle "Relational Database" {
+    database "CP Core Service\nDatabase Schema" as CpCoreSchema
+    database "EP Core Service\nDatabase Schema" as EpCoreSchema
+    database "User Management Service\nDatabase Schema" as UserSchema
+    database "Document Upload Service\nDatabase Schema" as UploadSchema
+    database "Financial Service\nDatabase Schema" as FinancialSchema
+    database "Reporting Service\nDatabase Schema" as ReportingSchema
+  }
+}
+rectangle "Microservices" {
+  rectangle "Core Services" as Core {
+    [CP Core Service] as CpCore
+    [EP Core Service] as EpCore
+    [Users Management Service] as User
+    [Document Upload Service] as Upload
+    [Financial Service] as Financial
+    [Reporting Service] as Reporting
+  }
+  CpCore -down-> CpCoreSchema
+  EpCore -down-> EpCoreSchema
+  User -down-> UserSchema
+  Upload -down-> UploadSchema
+  Financial -down-> FinancialSchema
+  Reporting -down-> ReportingSchema
+}
+@enduml

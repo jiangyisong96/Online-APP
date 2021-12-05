@@ -1,0 +1,26 @@
+@startuml
+left to right direction
+rectangle "Managed Services"{
+  component Broker [
+    Message Broker
+    - content and topic-based message routing
+    - dead-letter queue
+  ]
+}
+rectangle "Microservices" {
+  rectangle "Core Services" as Core {
+    [Users Management Service] as User
+    [Document Upload Service] as Upload
+    [Financial Service] as Financial
+    [Reporting Service] as Reporting
+    [CP Core Service] as CpCore
+    [EP Core Service] as EpCore
+  }
+  CpCore <--> Broker
+  EpCore <--> Broker
+  User <--> Broker
+  Upload <--> Broker
+  Financial <--> Broker
+  Reporting <--> Broker
+}
+@enduml

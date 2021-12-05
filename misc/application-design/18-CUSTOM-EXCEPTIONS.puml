@@ -1,0 +1,16 @@
+@startuml
+class ApplicationException {
+  -status : HttpStatus
+  -code : String code
+  -data : Object
+}
+
+class BadRequestException {
+}
+
+class ResourceNotFoundException {
+}
+
+ApplicationException <|-- BadRequestException
+ApplicationException <|-- ResourceNotFoundException
+@enduml

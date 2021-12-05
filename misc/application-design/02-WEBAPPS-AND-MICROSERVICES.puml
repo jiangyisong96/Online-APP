@@ -1,0 +1,42 @@
+@startuml
+left to right direction
+actor :Authority: as Authority
+actor :Public User: as PublicUser
+actor :Teacher: as Teacher
+rectangle "SEAB CP and EPP" {
+  [CP Web App] as CpApp
+  [EP Web App] as EpApp
+  rectangle "Managed Services" as Managed {
+    [Search Platform]
+    [In-memory Cache]
+    [Relational Database]
+    [File Storage]
+    [Email Service]
+    [Message Broker]
+  }
+  rectangle "Microservices" {
+    [Cloud Gateway] as Gateway
+    rectangle "Supporting Services" as Supporting {
+      [Externalized Configuration]
+      [Service Registry]
+    }
+    rectangle "Core Services" as Core {
+      [Financial Service]
+      [CP Core Service]
+      [EP Core Service]
+      [Reporting Service]
+      [Document Upload Service]
+      [Users Management Service]
+    }
+    Core -down- Supporting
+    Core -left- Managed
+    Gateway -- Core
+    CpApp -- Gateway
+    EpApp -- Gateway
+  }
+  Authority -- CpApp
+  Authority -- EpApp
+  PublicUser -- CpApp
+  Teacher -- EpApp
+}
+@enduml

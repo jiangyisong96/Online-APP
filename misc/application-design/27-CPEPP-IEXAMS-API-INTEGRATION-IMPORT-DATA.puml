@@ -1,0 +1,41 @@
+@startuml
+left to right direction
+actor :Client: as Client
+rectangle iEXAMS2 {
+  component API [
+    RESTful APIs
+  ]
+  component SFTP [
+    SFTP Flat Files
+  ]
+}
+rectangle "SEAB CP and EPP" {
+  component Service [
+    Core Microservice
+    - serve API requests
+  ]
+  component Layer [
+    Anti-corruption Layer
+    - translates requests
+  ]
+  component Database [
+    Primary Database
+    - normalized data
+  ]
+  component Scheduler [
+    Job Scheduler
+    - accumulate data
+  ]
+  component TempDatabase [
+    Temporary Database
+    - denormalized data
+  ]
+  Scheduler -down-> SFTP: **1** retrieve files
+  Scheduler .down.> API: **2** retrieve data
+  Scheduler -right-> TempDatabase: **3** save data
+  Client -down-> Service: **4** send API requests
+  Service -down-> Layer: **5** retrieve data
+  Layer -left-> TempDatabase: **6** retrieve data
+  Service -left-> Database: **7** save data
+}
+@enduml

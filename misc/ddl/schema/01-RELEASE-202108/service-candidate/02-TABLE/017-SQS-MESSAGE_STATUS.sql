@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS SERVICE_CANDIDATE.sqs_message_status CASCADE;
+
+CREATE TABLE SERVICE_CANDIDATE.sqs_message_status
+(
+    receipt_handle VARCHAR(512) NOT NULL PRIMARY KEY,
+    status         VARCHAR(50)  NOT NULL
+);

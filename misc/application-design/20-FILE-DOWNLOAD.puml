@@ -1,0 +1,58 @@
+@startuml
+actor User
+participant "Web App" as Client
+participant "CP Core Service" as CpCore
+participant "Document Service" as Document
+participant "S3 - Bucket" as Bucket
+participant "Amazon SQS" as SQS
+User -> Client: download document
+activate Client
+Client -> CpCore: GET: request for download
+activate CpCore
+CpCore -> Document: POST: create document record
+activate Document
+Document --> CpCore: Response: document id
+deactivate Document
+CpCore --> Client: Response: document id
+deactivate CpCore
+Client -> Document: GET: poll document ready status
+activate Document
+Document --> Client: Response: preparation in progress
+deactivate Document
+group job scheduler
+?-> CpCore: start
+activate CpCore
+CpCore -> CpCore: prepare document
+CpCore -> Bucket: POST: upload document
+activate Bucket
+Bucket --> CpCore: Response: document uploaded
+?<- CpCore: end
+deactivate CpCore
+end
+Bucket -> SQS: POST: publish document upload event
+deactivate Bucket
+activate SQS
+group job scheduler
+?-> Document: start
+activate Document
+Document -> SQS: GET: poll document upload event
+SQS --> Document: Response: document upload event
+deactivate SQS
+Document -> Bucket: GET: read document attributes
+activate Bucket
+Bucket --> Document: Response: document attributes
+deactivate Bucket
+Document -> Document: update document attributes
+?<- Document: end
+deactivate Document
+end
+Client -> Document: GET: poll document ready status
+activate Document
+Document --> Client: Response: pre-signed URL
+deactivate Document
+Client -> Bucket: GET: download document
+activate Bucket
+Bucket --> Client: Response: document
+deactivate Bucket
+deactivate Client
+@enduml

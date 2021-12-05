@@ -1,0 +1,94 @@
+@startuml
+actor User
+participant Client
+participant "S3 / CDN" as CDN
+participant "User Management Service" as AuthService
+participant "CP Core Service" as CpCore
+participant "ElasticCache" as Cache
+participant "SingPass IdP" as SingPass
+User -> Client: access web app
+Client -> CDN: GET: download web app
+activate CDN
+CDN --> Client: Response: app assets
+deactivate CDN
+
+alt new session
+Client -> AuthService: GET: retrieve user details
+activate AuthService
+AuthService --> Client: Response: 401 unauthorized
+deactivate AuthService
+Client -> AuthService: GET: retrieve redirect url
+activate AuthService
+AuthService -> AuthService: 1. generate state (CSRF protection)\n2. generate nonce (Replay attacks)\n3. construct redirect url\n4. create anonymous session
+AuthService -> Cache: POST: save anonymous session (with state and nonce)
+activate Cache
+Cache --> AuthService: Response: 200 ok
+deactivate Cache
+AuthService --> Client: Response: redirect url
+deactivate AuthService
+Client -> SingPass: GET: redirect to SingPass (with state and nonce in query string)
+activate SingPass
+SingPass --> Client: Response: signin form / scan QR
+deactivate SingPass
+User -> Client: submit credentials
+Client -> SingPass: POST: send credentials
+activate SingPass
+SingPass --> Client: Response: redirect to web app (with auth code and state in query string)
+deactivate SingPass
+Client -> CDN: GET: download web app
+activate CDN
+CDN --> Client: Response: app assets
+deactivate CDN
+Client -> AuthService: POST: send auth code and state
+activate AuthService
+AuthService -> Cache: GET: retrieve anonymous session
+activate Cache
+Cache --> AuthService: Response: anonymous session
+deactivate Cache
+AuthService -> AuthService: verify state
+AuthService -> SingPass: POST: exchange token (with auth code)
+activate SingPass
+SingPass --> AuthService: Response: security tokens and nonce
+deactivate SingPass
+AuthService -> AuthService: verify nonce and create user session
+AuthService -> Cache: POST: save user session
+activate Cache
+Cache --> AuthService: Response: 200 ok
+deactivate Cache
+AuthService -> AuthService: create jwt cookie
+AuthService --> Client: Response: user details json\nand jwt cookie
+deactivate AuthService
+Client -> Client: redirect to dashboard
+Client -> CpCore: GET: retrieve exams details (with jwt cookie)
+activate CpCore
+CpCore -> CpCore: verify jwt cookie
+CpCore -> Cache: GET: retrieve user session
+activate Cache
+Cache --> CpCore: Response: user session
+deactivate Cache
+CpCore -> CpCore: determine permission
+CpCore --> Client: Response: exams details json
+deactivate CpCore
+else existing session
+Client -> AuthService: GET: retrieve user details (with jwt cookie)
+activate AuthService
+AuthService -> AuthService: verify jwt cookie
+AuthService -> Cache: GET: retrieve user session
+activate Cache
+Cache --> AuthService: Response: user session
+deactivate Cache
+AuthService --> Client: Response: user details json
+deactivate AuthService
+Client -> Client: show dashboard
+Client -> CpCore: GET: retrieve exams details (with jwt cookie)
+activate CpCore
+CpCore -> CpCore: verify jwt cookie
+CpCore -> Cache: GET: retrieve user session
+activate Cache
+Cache --> CpCore: Response: user session
+deactivate Cache
+CpCore -> CpCore: determine permission
+CpCore --> Client: Response: exams details json
+deactivate CpCore
+end
+@enduml

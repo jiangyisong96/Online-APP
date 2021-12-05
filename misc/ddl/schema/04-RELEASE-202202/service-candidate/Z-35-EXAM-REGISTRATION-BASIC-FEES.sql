@@ -1,0 +1,1 @@
+DROP TABLE SERVICE_CANDIDATE.exam_registration_basic_fees;

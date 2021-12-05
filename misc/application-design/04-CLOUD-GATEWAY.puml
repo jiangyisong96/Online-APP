@@ -1,0 +1,26 @@
+@startuml
+left to right direction
+actor :Client: as Client
+rectangle "Microservices" {
+  component Gateway [
+    Cloud Gateway
+    - content-based routing and filtering
+    - circuit breaker, retries and fallback
+  ]
+  rectangle "Core Services" as Core {
+    [CP Core Service] as CpCore
+    [EP Core Service] as EpCore
+    [Users Management Service] as User
+    [Document Upload Service] as Upload
+    [Financial Service] as Financial
+    [Reporting Service] as Reporting
+  }
+  Client -down-> Gateway
+  Gateway --> Financial
+  Gateway --> CpCore
+  Gateway --> EpCore
+  Gateway --> Reporting
+  Gateway --> Upload
+  Gateway --> User
+}
+@enduml

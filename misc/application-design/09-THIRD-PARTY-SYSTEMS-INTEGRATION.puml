@@ -1,0 +1,18 @@
+@startuml
+left to right direction
+collections "Identity Providers and\nPersonal Data Platform" as Identity
+rectangle "Exam Admin System" as ExamAdmin
+collections "Payment Providers" as Payment
+rectangle "SEAB CP and EPP" {
+  rectangle "Microservices" {
+    component "Core Service" {
+      collections "Core and Supporting Functions" as Function
+      collections "Anti-corruption Layers" as AntiCorruption
+      Function -down- AntiCorruption
+      AntiCorruption -right- Identity
+      AntiCorruption -left- ExamAdmin
+      AntiCorruption -down- Payment
+    }
+  }
+}
+@enduml

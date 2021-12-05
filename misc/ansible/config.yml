@@ -1,0 +1,17 @@
+---
+elasticSearch:
+  version: 7.11.1
+  logDir: /var/log/elasticsearch
+  dataDir: /var/lib/elasticsearch
+mysql:
+  version: 80
+  newPassword: passw0rd!
+  dbUsername: ufinity
+  dbUserPassword: passw0rd!
+redis:
+  version: 6.0.9
+  port: 6379
+  databases: 1
+  logDir: /var/log/redis/
+  logFile: redis-server.log
+  dataDir: /var/lib/redis/

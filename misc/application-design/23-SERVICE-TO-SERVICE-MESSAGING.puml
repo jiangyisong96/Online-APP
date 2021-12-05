@@ -1,0 +1,32 @@
+@startuml
+left to right direction
+rectangle "Amazon SNS" as Broker {
+  rectangle "CP Core Service Topic" as CpCoreTopic
+  rectangle "EP Core Service Topic" as EpCoreTopic
+  rectangle "Reporting Service Topic" as ReportingTopic
+}
+rectangle "Amazon SQS" as Queue {
+  rectangle "CP Core Service Queue" as CpCoreQueue
+  rectangle "EP Core Service Queue" as EpCoreQueue
+  rectangle "Reporting Service Queue" as ReportingQueue
+}
+rectangle "Core Services" as Core {
+  [CP Core Service] as CpCore
+  [EP Core Service] as EpCore
+  [Reporting Service] as Reporting
+}
+rectangle "Shared Services" as Supporting {
+  [Users Management Service] as User
+  [Document Upload Service] as Document
+  [Financial Service] as Financial
+}
+User -[hidden]left-> Document
+Document -[hidden]left-> Financial
+Supporting  --> Broker: publish message
+CpCoreTopic --> CpCoreQueue: push message
+EpCoreTopic --> EpCoreQueue: push message
+ReportingTopic --> ReportingQueue: push message
+CpCore -up-> CpCoreQueue: poll message
+EpCore -up-> EpCoreQueue: poll message
+Reporting -up-> ReportingQueue: poll message
+@enduml

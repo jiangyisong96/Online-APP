@@ -1,0 +1,37 @@
+@startuml
+left to right direction
+component Events [
+  CloudWatch Events
+  - Trigger scheduled events yearly using cron expressions
+]
+component Lambda [
+  AWS Lambda
+  - Trigger CloudWatch Logs export task for audit logs
+]
+component Logs [
+  CloudWatch Logs
+  - Export audit logs to Amazon S3
+]
+component Bucket [
+  Amazon S3
+  - Transition audit and transaction logs to S3 Glacier
+]
+component Glacier [
+  S3 Glacier
+  - Hold audit and transaction logs for 7 years
+]
+component Service [
+  Reporting Microservice
+  - Trigger scheduled export task yearly for transaction logs
+]
+database Database [
+  Reporting Service Database
+  - Hold transaction logs
+]
+Events -right-> Lambda
+Lambda -right-> Logs
+Logs -right-> Bucket
+Bucket -right-> Glacier
+Service -right-> Database
+Service -up-> Bucket
+@enduml

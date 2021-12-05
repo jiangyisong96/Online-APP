@@ -1,0 +1,16 @@
+@startuml
+left to right direction
+actor :User: as User
+collections "Identity Providers and\nPersonal Data Platform" as Identity
+rectangle "Exam Admin System" as ExamAdmin
+collections "Payment Providers" as Payment
+rectangle "SEAB CP and EPP" {
+  collections "Web Apps" as WebApp
+  collections "Microservices" as Service
+  Service -right- Identity
+  Service -left- ExamAdmin
+  Service -down- Payment
+  WebApp -down- Service
+  User -down- WebApp
+}
+@enduml
