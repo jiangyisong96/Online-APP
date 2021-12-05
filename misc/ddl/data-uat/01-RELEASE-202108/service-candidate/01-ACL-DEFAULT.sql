@@ -19,7 +19,7 @@ values ("21", "GCEA", 2021, "EXPRESS");
 
 
 INSERT INTO SERVICE_CANDIDATE.acl_class(CLASS)
-VALUES ("com.ufinity.seab.service.candidate.repository.entity.AclResult");
+VALUES ("onlineapp.service.candidate.repository.entity.AclResult");
 
 
 INSERT INTO SERVICE_CANDIDATE.acl_sid(sid, principal)
